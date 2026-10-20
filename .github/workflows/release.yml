@@ -113,7 +113,7 @@ jobs:
         with:
           name: nuget-package
           path: packages/*
-          retention-days: 7
+          retention-days: 30
 
   pack-smoke-test:
     name: Pack Test
@@ -145,27 +145,3 @@ jobs:
         working-directory: tests/DataFusionSharp.PackageSmokeTest
         run: dotnet run --no-build -c Release -p:UseLocalPackage=true
         timeout-minutes: 1
-
-  github-release:
-    name: Create GitHub Release
-    needs: pack-smoke-test
-    runs-on: ubuntu-22.04
-    permissions:
-      contents: write
-    steps:
-      - name: Download NuGet Package Artifacts
-        uses: actions/download-artifact@v7
-        with:
-          name: nuget-package
-          path: packages
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda
-        with:
-          name: ${{ github.ref_name }}
-          generate_release_notes: true
-          prerelease: ${{ contains(github.ref_name, '-') }}
-          files: |
-            packages/*.nupkg
-            packages/*.snupkg
-
