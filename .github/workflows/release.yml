@@ -48,6 +48,9 @@ jobs:
 
       - name: Setup Protoc
         uses: arduino/setup-protoc@v3
+        with:
+          # Authenticated: anonymous calls to the GitHub API are limited per runner IP, shared with other jobs
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Native Library
         working-directory: native
