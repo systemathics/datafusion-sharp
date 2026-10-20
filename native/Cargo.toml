@@ -36,3 +36,8 @@ url = "2.5.8"
 
 [build-dependencies]
 prost-build = "0.14.3"
+
+# musl's loader refuses initial-exec TLS in a library loaded with dlopen, as .NET loads native libraries ("initial-exec TLS resolves to dynamic
+# definition"); glibc tolerates it. mimalloc must use local-dynamic TLS there.
+[target.'cfg(target_env = "musl")'.dependencies]
+mimalloc = { version = "0.1", optional = true, features = ["local_dynamic_tls"] }
