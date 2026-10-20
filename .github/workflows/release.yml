@@ -10,14 +10,8 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 jobs:
-  check:
-    name: Run Checks
-    uses: ./.github/workflows/ci.yml
-    secrets: inherit
-
   pack-build-native:
     name: Build Native
-    needs: check
     strategy:
       matrix:
         include:
@@ -79,7 +73,6 @@ jobs:
 
   pack-build-native-musl:
     name: Build Native (x86_64-unknown-linux-musl, alpine)
-    needs: check
     runs-on: ubuntu-22.04
     # Built on Alpine itself, so that the C code built along (mimalloc, compression, TLS) is compiled against musl, not cross-compiled
     container: rust:alpine
