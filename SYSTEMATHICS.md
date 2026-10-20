@@ -4,6 +4,7 @@ Upstream: https://github.com/nazarii-piontko/datafusion-sharp. This branch, `sys
 
 ## Differences from upstream
 
+- Branch `systemathics-df55`: DataFusion and datafusion-proto 55.2, Arrow 59.2, the versions DataFusion 55.2 is built on. object_store stays 0.13, the line DataFusion 55.2 uses, so there is a single copy of each in the dependency graph.
 - The native library allocates through mimalloc on every OS (`native/src/lib.rs`, `#[global_allocator]`). Windows' default heap hands large blocks (more than about 512 KB, such as the column buffers of 64K-row batches) to `VirtualAlloc`/`VirtualFree` on every allocation. glibc keeps and reuses that memory, so the default allocators give different performance on Windows and Linux. mimalloc keeps and reuses it on both.
 - The packages are `Systemathics.DataFusionSharp` and `Systemathics.DataFusionSharp.Data`. Their own ids keep them apart from upstream's packages in a shared NuGet cache. The namespaces and the assembly names are unchanged.
 - No macOS package: nobody runs it on a Mac, and GitHub's macOS arm64 runners were too scarce to pick up the build. The native libraries are linux-x64, linux-arm64 and win-x64.
