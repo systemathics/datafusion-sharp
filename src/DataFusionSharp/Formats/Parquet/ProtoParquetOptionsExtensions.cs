@@ -37,6 +37,8 @@ internal static class ProtoParquetOptionsExtensions
             Pruning = true,
             SkipMetadata = true,
             DataPagesizeLimit = 1024 * 1024,
+            DataPageRowCountLimit = 20_000,
+            DictionaryPageSizeLimit = 1024 * 1024,
             WriteBatchSize = 1024,
             WriterVersion = "1.0",
             AllowSingleFileParallelism = true,
