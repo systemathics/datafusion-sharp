@@ -83,9 +83,42 @@ jobs:
           overwrite: true
           retention-days: 1
 
+  pack-build-native-musl:
+    name: Build Native (x86_64-unknown-linux-musl, alpine)
+    needs: check
+    runs-on: ubuntu-22.04
+    # Built on Alpine itself, so that the C code built along (compression codecs, TLS) is compiled against musl, not cross-compiled
+    container: rust:alpine
+
+    steps:
+      - name: Setup Build Tools
+        run: apk add --no-cache build-base cmake perl linux-headers protobuf protobuf-dev git
+
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Build Native Library
+        working-directory: native
+        env:
+          PROTOC: /usr/bin/protoc
+        run: cargo build --target x86_64-unknown-linux-musl --profile release --lib
+
+      - name: Prepare Native Library Artifacts
+        run: |
+          mkdir -p artifacts/native/target/x86_64-unknown-linux-musl/release/
+          cp native/target/x86_64-unknown-linux-musl/release/*.so artifacts/native/target/x86_64-unknown-linux-musl/release/
+
+      - name: Upload Native Library as Artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: native-x86_64-unknown-linux-musl
+          path: artifacts/**
+          overwrite: true
+          retention-days: 1
+
   pack:
     name: Pack NuGet
-    needs: pack-build-native
+    needs: [pack-build-native, pack-build-native-musl]
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
@@ -146,9 +179,33 @@ jobs:
         run: dotnet run --no-build -c Release -p:UseLocalPackage=true
         timeout-minutes: 1
 
+  pack-smoke-test-musl:
+    name: Pack Test (alpine)
+    needs: pack
+    runs-on: ubuntu-22.04
+    container: mcr.microsoft.com/dotnet/sdk:10.0-alpine
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Download NuGet Package Artifacts
+        uses: actions/download-artifact@v7
+        with:
+          name: nuget-package
+          path: packages
+
+      - name: Build Test Application with Local NuGet Package
+        working-directory: tests/DataFusionSharp.PackageSmokeTest
+        run: dotnet build -c Release -p:UseLocalPackage=true
+
+      - name: Run Test Application
+        working-directory: tests/DataFusionSharp.PackageSmokeTest
+        run: dotnet run --no-build -c Release -p:UseLocalPackage=true
+        timeout-minutes: 1
+
   pack-publish-github:
     name: Publish to GitHub Packages
-    needs: pack-smoke-test
+    needs: [pack-smoke-test, pack-smoke-test-musl]
     runs-on: ubuntu-22.04
     permissions:
       packages: write
