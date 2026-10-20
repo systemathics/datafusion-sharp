@@ -681,7 +681,11 @@ pub unsafe extern "C" fn datafusion_dataframe_write_parquet(
         .as_opt_slice()
         .map(|b| {
             datafusion_proto::protobuf::TableParquetOptions::decode(b)
-                .map(|pbo| datafusion::common::config::TableParquetOptions::from(&pbo))
+                .map_err(anyhow::Error::from)
+                .and_then(|pbo| {
+                    datafusion::common::config::TableParquetOptions::try_from(&pbo)
+                        .map_err(anyhow::Error::from)
+                })
         })
         .transpose()
     else {

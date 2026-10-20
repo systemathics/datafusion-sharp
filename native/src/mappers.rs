@@ -181,8 +181,8 @@ fn from_proto_file_sort_order(
     file_sort_order: &[datafusion_proto::protobuf::SortExprNodeCollection],
 ) -> Result<Vec<Vec<SortExpr>>> {
     let codec = datafusion_proto::logical_plan::DefaultLogicalExtensionCodec {};
-    let registry_impl = datafusion::execution::registry::MemoryFunctionRegistry::new();
-    let registry: &dyn datafusion::execution::FunctionRegistry = &registry_impl;
+    // No function registered, as before 55 with an empty MemoryFunctionRegistry: parse_expr now takes a TaskContext
+    let task_ctx = datafusion::execution::TaskContext::default();
 
     file_sort_order
         .iter()
@@ -197,7 +197,7 @@ fn from_proto_file_sort_order(
                         .ok_or_else(|| anyhow!("Missing sort expression"))?;
 
                     let expr = datafusion_proto::logical_plan::from_proto::parse_expr(
-                        expr_node, registry, &codec,
+                        expr_node, &task_ctx, &codec,
                     )?;
 
                     Ok(SortExpr {
