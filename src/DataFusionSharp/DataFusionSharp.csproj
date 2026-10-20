@@ -57,6 +57,7 @@
         <CargoProfileBuildDirName Condition="'$(Configuration)' == 'Debug'">debug</CargoProfileBuildDirName>
 
         <CargoTargetLinuxX64>x86_64-unknown-linux-gnu</CargoTargetLinuxX64>
+        <CargoTargetLinuxMuslX64>x86_64-unknown-linux-musl</CargoTargetLinuxMuslX64>
         <CargoTargetLinuxARM64>aarch64-unknown-linux-gnu</CargoTargetLinuxARM64>
         <CargoTargetWinX64>x86_64-pc-windows-msvc</CargoTargetWinX64>
         <CargoTargetOsxARM64>aarch64-apple-darwin</CargoTargetOsxARM64>
@@ -65,6 +66,7 @@
         <NativeLibName>datafusion_sharp_native</NativeLibName>
 
         <BuildCargoTarget Condition="'$(NETCoreSdkRuntimeIdentifier)' == 'linux-x64'">$(CargoTargetLinuxX64)</BuildCargoTarget>
+        <BuildCargoTarget Condition="'$(NETCoreSdkRuntimeIdentifier)' == 'linux-musl-x64'">$(CargoTargetLinuxMuslX64)</BuildCargoTarget>
         <BuildCargoTarget Condition="'$(NETCoreSdkRuntimeIdentifier)' == 'linux-arm64'">$(CargoTargetLinuxARM64)</BuildCargoTarget>
         <BuildCargoTarget Condition="'$(NETCoreSdkRuntimeIdentifier)' == 'win-x64'">$(CargoTargetWinX64)</BuildCargoTarget>
         <BuildCargoTarget Condition="'$(NETCoreSdkRuntimeIdentifier)' == 'osx-arm64'">$(CargoTargetOsxARM64)</BuildCargoTarget>
@@ -86,6 +88,12 @@
         <None Include="$(NativeLibRootDir)/target/$(CargoTargetLinuxX64)/$(CargoProfileBuildDirName)/lib$(NativeLibName).so"
               PackagePath="runtimes/linux-x64/native/"
               Condition="Exists('$(NativeLibRootDir)/target/$(CargoTargetLinuxX64)/$(CargoProfileBuildDirName)/lib$(NativeLibName).so')"
+              Pack="true" Visible="false" />
+
+        <!-- Linux musl x64 (Alpine) -->
+        <None Include="$(NativeLibRootDir)/target/$(CargoTargetLinuxMuslX64)/$(CargoProfileBuildDirName)/lib$(NativeLibName).so"
+              PackagePath="runtimes/linux-musl-x64/native/"
+              Condition="Exists('$(NativeLibRootDir)/target/$(CargoTargetLinuxMuslX64)/$(CargoProfileBuildDirName)/lib$(NativeLibName).so')"
               Pack="true" Visible="false" />
 
         <!-- Linux ARM64 -->
