@@ -32,10 +32,7 @@ jobs:
           # Windows x64
           - target: x86_64-pc-windows-msvc
             os: windows-2025
-          
-          # macOS ARM64
-          - target: aarch64-apple-darwin
-            os: macos-26
+
     
     runs-on: ${{ matrix.os }}
     
@@ -69,12 +66,6 @@ jobs:
           New-Item -ItemType Directory -Force -Path artifacts/native/target/${{ matrix.target }}/release/
           Copy-Item native/target/${{ matrix.target }}/release/*.dll artifacts/native/target/${{ matrix.target }}/release/
           
-      - name: (MacOS) Prepare Native Library Artifacts
-        if: runner.os == 'MacOS'
-        run: |
-          mkdir -p artifacts/native/target/${{ matrix.target }}/release/
-          cp native/target/${{ matrix.target }}/release/*.dylib artifacts/native/target/${{ matrix.target }}/release/
-
       - name: Upload Native Library as Artifacts
         uses: actions/upload-artifact@v6
         with:
@@ -120,7 +111,7 @@ jobs:
     needs: pack
     strategy:
       matrix:
-        os: [ubuntu-22.04, ubuntu-22.04-arm, windows-2025, macos-26]
+        os: [ubuntu-22.04, ubuntu-22.04-arm, windows-2025]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
