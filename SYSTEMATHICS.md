@@ -12,7 +12,7 @@ Upstream: https://github.com/nazarii-piontko/datafusion-sharp. This branch, `sys
 ## Releasing
 
 1. Tag the commit `v<upstream version>-mimalloc.<n>`, for example `v0.6.3-mimalloc.1`, and push the tag. MinVer takes the package version from the tag.
-2. The `Release` workflow builds the three native libraries (linux-x64, linux-arm64, win-x64), packs, and smoke-tests on the three platforms.
+2. The `Release` workflow builds the three native libraries (linux-x64, linux-arm64, win-x64), and packs. There is no package smoke test: it builds an app against the packages by id, which only resolves from a feed they are published to.
 3. Download the `nuget-package` artifact from the run's summary page (kept 30 days), and upload its `.nupkg`/`.snupkg` to https://nexus3.systemathics.io:8443/repository/systemathics-internal.
 
 ## Rebasing on a newer upstream
