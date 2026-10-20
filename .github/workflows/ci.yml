@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - 'systemathics**'
     paths:
       - 'src/**'
       - 'native/**'
@@ -12,6 +13,7 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
   workflow_call:
     outputs:
       check-passed:
@@ -71,8 +73,16 @@ jobs:
         run: dotnet build -c Release
 
       - name: Run Test
-        run: dotnet test --no-build -c Release -v n --logger 'console;verbosity=normal'
+        run: dotnet test --no-build -c Release -v n --logger 'console;verbosity=normal' --blame-crash --blame-crash-dump-type mini --results-directory TestResults
         timeout-minutes: 5
+
+      - name: Upload Test Results
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: test-results
+          path: TestResults/
+          retention-days: 7
 
       - name: Run Rust Cargo Clippy
         working-directory: native
