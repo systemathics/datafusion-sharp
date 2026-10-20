@@ -17,7 +17,7 @@
     
     <!-- NuGet package metadata -->
     <PropertyGroup>
-        <PackageId>DataFusionSharp</PackageId>
+        <PackageId>Systemathics.DataFusionSharp</PackageId>
         <!--<Version>0.1.0</Version>--><!-- Version is set dynamically in CI pipeline -->
         <MinVerTagPrefix>v</MinVerTagPrefix>
         <Authors>Nazarii Piontko</Authors>

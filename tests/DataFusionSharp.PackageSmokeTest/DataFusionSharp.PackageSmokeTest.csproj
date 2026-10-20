@@ -12,8 +12,8 @@
         <ProjectReference Include="..\..\src\DataFusionSharp.Data\DataFusionSharp.Data.csproj" />
     </ItemGroup>
     <ItemGroup Condition="'$(UseLocalPackage)' == 'true'">
-        <PackageReference Include="DataFusionSharp" Version="*" />
-        <PackageReference Include="DataFusionSharp.Data" Version="*" />
+        <PackageReference Include="Systemathics.DataFusionSharp" Version="*-*" />
+        <PackageReference Include="Systemathics.DataFusionSharp.Data" Version="*-*" />
     </ItemGroup>
     
     <ItemGroup>
